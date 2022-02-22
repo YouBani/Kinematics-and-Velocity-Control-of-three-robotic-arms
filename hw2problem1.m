@@ -42,14 +42,14 @@ S = [0 0 1 0 0 0;
 % First, let us calculate the homogeneous transformation matrix M for the
 % home configuration
 
- M = [0 1 0 0;
-     1 0 0 L2;
-     0 0 -1 0
-     0 0 0 1];
-% M = [0 1 0 0;
-%     0 0 -1 L2;
-%     -1 0 0 0;
-%     0 0 0 1];
+%  M = [0 1 0 0;
+%      1 0 0 L2;
+%      0 0 -1 0
+%      0 0 0 1];
+M = [0 1 0 0;
+    0 0 -1 L2;
+    -1 0 0 0;
+    0 0 0 1];
 fprintf('---------------------Forward Kinematics Test---------------------\n');
 fprintf(['Testing ' num2str(nTests) ' random configurations.\n']);
 fprintf('Progress: ');
@@ -100,7 +100,7 @@ for ii = 1 : nTests
     T = fkine(S,M,q);
     
     % Calculate the Jacobian
-    %J = ...
+    J = jacob0(S, q);
     
     if plotOn
         robot.teach(q);
@@ -154,8 +154,8 @@ for ii = 1 : nTests
     
     % Inverse Kinematics
     while norm(targetPose - currentPose) > 1e-3
-        %J = ...
-        % deltaQ = ...
+        J = jacob0(S, currentQ);
+        deltaQ = pinv(J)*(targetPose - currentPose);
       
         currentQ = currentQ + deltaQ';
         
